@@ -39,6 +39,7 @@ http://127.0.0.1:8501
 - Competences extraites : 57
 - Recommandations generees : 10
 - Rapport qualite : PASS
+- Hadoop Windows installe pour permettre l'ecriture Parquet native Spark en local
 
 ## Tables PostgreSQL
 
@@ -97,7 +98,8 @@ Streamlit sert d'interface de restitution pour le jury et les utilisateurs.
 
 Azure Data Lake Storage Gen2 est documente comme architecture cible. En demonstration locale rapide, les chemins `data/local/bronze`, `data/local/silver` et `data/local/gold` simulent les containers Azure.
 
+Sous Windows, Hadoop minimal est installe dans `C:\hadoop` pour permettre a Spark d'ecrire les fichiers Parquet localement.
+
 Le web scraping est optionnel pour eviter de rendre la soutenance dependante d'une page web externe instable.
 
 Le moteur de recommandation est volontairement simple et explicable : pas de Deep Learning, pas de LLM.
-

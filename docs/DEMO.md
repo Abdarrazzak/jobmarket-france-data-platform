@@ -46,6 +46,14 @@ pip install -r requirements-local-windows.txt
 python scripts/run_local_pipeline.py --step all --skip-postgres
 ```
 
+Si Spark affiche une erreur Hadoop/Windows du type `winutils.exe` ou `HADOOP_HOME`, installer le correctif Windows minimal :
+
+```powershell
+mkdir C:\hadoop\bin
+# Copier winutils.exe et hadoop.dll dans C:\hadoop\bin
+setx HADOOP_HOME C:\hadoop
+```
+
 Cette commande genere :
 
 - Bronze : JSON brut historise ;

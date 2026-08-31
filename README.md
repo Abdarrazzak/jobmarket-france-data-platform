@@ -79,6 +79,7 @@ pytest
 - [Modele de donnees](docs/DATA_MODEL.md)
 - [API](docs/API.md)
 - [PostgreSQL](docs/POSTGRESQL.md)
+- [Hadoop Windows](docs/HADOOP_WINDOWS.md)
 - [Deploiement](docs/DEPLOYMENT.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Script de demonstration](docs/DEMO.md)

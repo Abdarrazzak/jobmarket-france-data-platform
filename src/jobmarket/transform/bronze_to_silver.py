@@ -69,4 +69,9 @@ def transform_bronze_to_silver(raw_jobs: DataFrame) -> DataFrame:
         F.to_timestamp(F.col("ingestion_timestamp")).alias("ingestion_timestamp"),
     )
 
-    return cleaned.dropDuplicates(["job_id"])
+    return (
+        cleaned.where(F.col("source").isNotNull() & (F.length(F.trim(F.col("source"))) > 0))
+        .where(F.col("title").isNotNull() & (F.length(F.trim(F.col("title"))) > 0))
+        .where(F.col("company").isNotNull() & (F.length(F.trim(F.col("company"))) > 0))
+        .dropDuplicates(["job_id"])
+    )
