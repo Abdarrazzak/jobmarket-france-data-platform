@@ -39,6 +39,12 @@ Puis charger PostgreSQL :
 python scripts/run_local_pipeline.py --step load_postgres
 ```
 
+Puis enrichir les descriptions Adzuna tronquees :
+
+```powershell
+python scripts/run_local_pipeline.py --step backfill_adzuna_descriptions
+```
+
 Si PySpark affiche une erreur Java, installer le JDK local embarque :
 
 ```powershell
@@ -56,12 +62,13 @@ setx HADOOP_HOME C:\hadoop
 
 Cette commande genere :
 
-- Bronze : JSON brut historise ;
+- Bronze : JSON brut historise, sans donnees d'exemple en chargement final ;
 - Silver : Parquet nettoye avec PySpark ;
 - Gold : tables analytiques avec PySpark ;
 - fact_skills : competences detectees ;
 - job_recommendations : recommandations scorees ;
 - quality_report.json : rapport qualite.
+- description_enrichment_log : audit des descriptions Adzuna enrichies depuis HTML.
 
 Ensuite lancer l'API :
 
@@ -85,13 +92,26 @@ streamlit run dashboard/app.py --server.headless true --browser.gatherUsageStats
 
 Le sprint local valide :
 
-- 58 offres dans `analytics.fact_jobs` ;
-- 47 entreprises dans `analytics.dim_company` ;
-- 29 localisations dans `analytics.dim_location` ;
-- 57 competences extraites dans `analytics.fact_skills` ;
+- 797 vraies offres Adzuna France dans `analytics.fact_jobs` ;
+- 397 entreprises dans `analytics.dim_company` ;
+- 141 localisations dans `analytics.dim_location` ;
+- 350 competences extraites dans `analytics.fact_skills` apres enrichissement Adzuna ;
 - 10 recommandations dans `analytics.job_recommendations` ;
 - rapport qualite `PASS`.
 
+## Extraction internet ciblee France/data
+
+Le fichier `configs/extraction_plan.json` pilote le volume d'extraction :
+
+- focus : mots-cles data et termes de localisation France ;
+- Adzuna : metiers data, recherche France entiere, nombre de pages, delai entre appels ;
+- The Muse : categorie Data Science et localisations France ;
+- web scraping Python.org Jobs : module optionnel, desactive par defaut dans la demo France car la source retourne surtout des offres remote internationales.
+
+Pour augmenter le volume, augmenter progressivement `max_pages_per_search`. Le plan actuel utilise peu de localisations et plus de pages par metier, afin de limiter les doublons et de rester dans les quotas Adzuna.
+
 ## Discours court pour le jury
 
-Le projet collecte des offres depuis Adzuna, The Muse et une source web scraping optionnelle. Les donnees brutes sont conservees en Bronze au format JSON avec une historisation par date et par run. PySpark lit ensuite la couche Bronze, nettoie et harmonise les colonnes dans Silver, puis cree les tables Gold pour l'analyse metier. Les competences sont extraites automatiquement par expressions regulieres Spark sans UDF. Le moteur de recommandation applique un score explicable base sur les competences, la localisation, le contrat et le niveau. Les donnees Gold sont chargees dans PostgreSQL, puis exposees par FastAPI et visualisees dans Streamlit. Airflow orchestre les etapes, Docker Compose lance les composants.
+Le projet interroge Adzuna et The Muse, avec un module web scraping optionnel. Le dataset final valide contient uniquement de vraies offres Adzuna France, car les sources hors perimetre France/data sont filtrees ou desactivees. Le plan de collecte cible les metiers data comme Data Engineer, Data Analyst, Data Scientist, Analytics Engineer, BI Analyst et Machine Learning Engineer. Les donnees brutes sont conservees en Bronze au format JSON avec une historisation par date et par run. PySpark lit ensuite la couche Bronze, nettoie et harmonise les colonnes dans Silver, puis cree les tables Gold pour l'analyse metier. Les competences sont extraites automatiquement par expressions regulieres Spark sans UDF. Le moteur de recommandation applique un score explicable base sur les competences, la localisation, le contrat et le niveau. Les donnees Gold sont chargees dans PostgreSQL, puis exposees par FastAPI et visualisees dans Streamlit. Airflow orchestre les etapes, Docker Compose lance les composants.
+
+Point important sur Adzuna : l'API peut renvoyer une description courte. Pour ameliorer l'extraction des competences, une etape lit les URLs Adzuna stockees dans PostgreSQL, recupere la page HTML de detail, extrait une description plus longue quand elle existe, puis rafraichit `fact_skills` et `job_recommendations`. Le dernier test local a enrichi 14 descriptions Adzuna et pousse la plus longue description a 4 785 caracteres.

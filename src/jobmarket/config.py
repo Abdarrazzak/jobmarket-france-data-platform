@@ -21,6 +21,9 @@ class Settings:
         os.getenv("QUALITY_REPORT_PATH", PROJECT_ROOT / "data" / "local" / "quality" / "quality_report.json")
     )
     user_profile_path: Path = Path(os.getenv("USER_PROFILE_PATH", PROJECT_ROOT / "configs" / "user_profile.json"))
+    extraction_plan_path: Path = Path(
+        os.getenv("EXTRACTION_PLAN_PATH", PROJECT_ROOT / "configs" / "extraction_plan.json")
+    )
 
     adzuna_app_id: str | None = os.getenv("ADZUNA_APP_ID")
     adzuna_app_key: str | None = os.getenv("ADZUNA_APP_KEY")
@@ -31,6 +34,12 @@ class Settings:
     postgres_user: str = os.getenv("POSTGRES_USER", "jobmarket")
     postgres_password: str = os.getenv("POSTGRES_PASSWORD", "jobmarket")
 
+    adzuna_description_backfill_max_jobs: int = int(os.getenv("ADZUNA_DESCRIPTION_BACKFILL_MAX_JOBS", "50"))
+    adzuna_description_backfill_min_chars: int = int(os.getenv("ADZUNA_DESCRIPTION_BACKFILL_MIN_CHARS", "900"))
+    adzuna_description_backfill_max_chars: int = int(os.getenv("ADZUNA_DESCRIPTION_BACKFILL_MAX_CHARS", "20000"))
+    adzuna_description_backfill_throttle_seconds: float = float(
+        os.getenv("ADZUNA_DESCRIPTION_BACKFILL_THROTTLE_SECONDS", "1.0")
+    )
+
 
 settings = Settings()
-

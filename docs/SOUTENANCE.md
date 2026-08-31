@@ -2,7 +2,7 @@
 
 ## Pitch en 45 secondes
 
-JobMarket Data Platform est une plateforme Data Engineering qui collecte des offres d'emploi depuis plusieurs sources, dont Adzuna, The Muse et une source web scraping optionnelle. Les donnees brutes sont historisees dans une couche Bronze, puis nettoyees en Silver et enrichies en Gold avec PySpark. Les tables Gold alimentent un Data Warehouse PostgreSQL. FastAPI expose les donnees et Streamlit permet d'explorer les KPI, les competences, les entreprises et les recommandations.
+JobMarket Data Platform est une plateforme Data Engineering specialisee sur les offres data en France. Elle interroge Adzuna et The Muse, avec un module web scraping optionnel, puis conserve uniquement les vraies offres qui respectent le perimetre France/data. Les donnees brutes sont historisees dans une couche Bronze, puis nettoyees en Silver et enrichies en Gold avec PySpark. Les tables Gold alimentent un Data Warehouse PostgreSQL. FastAPI expose les donnees et Streamlit permet d'explorer les KPI, les competences, les entreprises et les recommandations.
 
 ## Ce que je montre dans la demo
 
@@ -33,13 +33,14 @@ http://127.0.0.1:8501
 
 ## Resultats valides localement
 
-- Offres chargees en Silver/Gold : 58
-- Entreprises : 47
-- Localisations : 29
-- Competences extraites : 57
+- Offres chargees en Silver/Gold : 797 vraies offres Adzuna France
+- Entreprises : 397
+- Localisations : 141
+- Competences extraites : 350 apres enrichissement Adzuna
 - Recommandations generees : 10
 - Rapport qualite : PASS
 - Hadoop Windows installe pour permettre l'ecriture Parquet native Spark en local
+- Descriptions Adzuna enrichissables depuis les URLs stockees en base
 
 ## Tables PostgreSQL
 
@@ -51,29 +52,29 @@ http://127.0.0.1:8501
 
 ## Top competences observees
 
-- SQL
-- Python
-- Azure
-- Docker
-- PostgreSQL
+- Power BI
 - Databricks
-- Airflow
+- SQL
 - GCP
+- Azure
 - DBT
-- PySpark
+- Python
+- Snowflake
+- AWS
+- Spark
 
 ## Recommandation principale observee
 
 Pour un profil `Python, SQL, PySpark, Azure`, localise a Paris, niveau junior, contrat CDI :
 
 ```text
-Junior Data Engineer - DataNova - score 46
+Data Engineer F/H - Datatorii - Paris - score 43
 ```
 
 Le score est explicable :
 
 ```text
-skills=4 | location_bonus=3 | contract_bonus=2 | experience_bonus=1
+skills=4 | location_bonus=3 | contract_bonus=0 | experience_bonus=0
 ```
 
 ## Points techniques a expliquer
@@ -103,3 +104,19 @@ Sous Windows, Hadoop minimal est installe dans `C:\hadoop` pour permettre a Spar
 Le web scraping est optionnel pour eviter de rendre la soutenance dependante d'une page web externe instable.
 
 Le moteur de recommandation est volontairement simple et explicable : pas de Deep Learning, pas de LLM.
+
+## Sources internet
+
+Adzuna est interroge avec pagination par metier data sur le marche France, en respectant un delai entre les appels et en normalisant les localisations pour remonter des villes plutot que des arrondissements.
+
+The Muse est interroge via son API publique paginee, sur la categorie Data Science et les localisations France.
+
+Le scraping optionnel lit Python.org Jobs pour demontrer l'integration d'une page HTML publique, mais il est desactive dans la demo finale car cette source retourne surtout des offres remote internationales, hors perimetre France.
+
+Un filtre de focus conserve uniquement les offres qui contiennent des mots-cles data et une localisation francaise. Cela evite que des requetes larges comme `python` ou `sql` melangent des offres de developpement general avec le marche data.
+
+Les donnees d'exemple ne sont pas chargees dans la base finale. Si une API echoue, le pipeline ne remplace pas les resultats par de fausses URLs.
+
+Limite Adzuna assumee : la description retournee par API peut etre tronquee. Le projet ajoute donc une etape `backfill_adzuna_descriptions` qui lit les liens Adzuna dans PostgreSQL, scrape la page HTML de detail, remplace la description si elle est plus longue, puis recalcule les competences et les recommandations.
+
+Dernier test local : 14 descriptions Adzuna enrichies, description maximale passee a 4 785 caracteres, et table `analytics.fact_skills` rafraichie a 350 lignes.

@@ -29,4 +29,6 @@ http://localhost:8000/docs
 
 L'API ne transforme pas les donnees lourdes. Elle lit des tables deja preparees dans PostgreSQL.
 
-Si PostgreSQL n'est pas encore disponible pendant une demonstration locale, l'API retourne des donnees d'exemple. Cela permet de demontrer Swagger et Streamlit meme avant le chargement complet.
+L'API expose des champs metier pour le dashboard. Les identifiants techniques restent dans PostgreSQL, mais ne sont pas affiches dans les endpoints principaux afin de garder une restitution lisible pour la soutenance.
+
+Si PostgreSQL n'est pas disponible, l'API retourne des listes vides plutot que des donnees d'exemple. La base finale ne contient donc pas de fausses offres.

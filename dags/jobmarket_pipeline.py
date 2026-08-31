@@ -31,7 +31,7 @@ with DAG(
 ) as dag:
     extract_adzuna = pipeline_task("extract_adzuna", "extract_adzuna")
     extract_muse = pipeline_task("extract_muse", "extract_muse")
-    extract_scraping_sample = pipeline_task("extract_scraping_sample", "extract_scraping_sample")
+    extract_web_scraping = pipeline_task("extract_web_scraping", "extract_web_scraping")
     store_bronze = pipeline_task("store_bronze", "store_bronze")
     bronze_to_silver = pipeline_task("bronze_to_silver", "bronze_to_silver")
     silver_to_gold = pipeline_task("silver_to_gold", "silver_to_gold")
@@ -39,13 +39,14 @@ with DAG(
     build_recommendations = pipeline_task("build_recommendations", "build_recommendations")
     quality_checks = pipeline_task("quality_checks", "quality_checks")
     load_postgres = pipeline_task("load_postgres", "load_postgres")
+    backfill_adzuna_descriptions = pipeline_task("backfill_adzuna_descriptions", "backfill_adzuna_descriptions")
     refresh_api = pipeline_task("refresh_api", "refresh_api")
     refresh_dashboard = pipeline_task("refresh_dashboard", "refresh_dashboard")
 
     (
         extract_adzuna
         >> extract_muse
-        >> extract_scraping_sample
+        >> extract_web_scraping
         >> store_bronze
         >> bronze_to_silver
         >> silver_to_gold
@@ -53,7 +54,7 @@ with DAG(
         >> build_recommendations
         >> quality_checks
         >> load_postgres
+        >> backfill_adzuna_descriptions
         >> refresh_api
         >> refresh_dashboard
     )
-

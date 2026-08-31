@@ -82,3 +82,16 @@ Colonnes attendues :
 - `load_date`
 - `ingestion_timestamp`
 
+### analytics.description_enrichment_log
+
+Table d'audit de l'enrichissement HTML Adzuna.
+
+Colonnes attendues :
+
+- `job_id`
+- `source_url`
+- `status`
+- `original_length`
+- `enriched_length`
+- `error_message`
+- `scraped_at`

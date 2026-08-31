@@ -40,6 +40,8 @@ PySpark realise les transformations lourdes : nettoyage, harmonisation, enrichis
 
 PostgreSQL sert de Data Warehouse pour les tables structurees interrogees par l'API et le dashboard.
 
+Une etape complementaire enrichit les descriptions Adzuna apres le chargement PostgreSQL. Elle lit les URLs Adzuna stockees dans `analytics.fact_jobs`, scrape la page HTML de detail, remplace la description tronquee quand une version plus longue est disponible, puis rafraichit les competences et recommandations en base.
+
 FastAPI expose les donnees via des endpoints REST documentes par Swagger.
 
 Streamlit presente les KPI, les graphiques et les recommandations.
@@ -55,7 +57,7 @@ L'ordre retenu charge PostgreSQL apres la creation des competences et recommanda
 ```text
 extract_adzuna
 extract_muse
-extract_scraping_sample
+extract_web_scraping
 store_bronze
 bronze_to_silver
 silver_to_gold
@@ -63,6 +65,7 @@ extract_skills
 build_recommendations
 quality_checks
 load_postgres
+backfill_adzuna_descriptions
 refresh_api
 refresh_dashboard
 ```

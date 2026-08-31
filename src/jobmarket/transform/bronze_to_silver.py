@@ -7,6 +7,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import DoubleType, StringType
 
 from jobmarket.io import read_json_as_spark, write_parquet
+from jobmarket.transform.locations import normalize_city
 
 
 RAW_COLUMNS = [
@@ -43,7 +44,7 @@ def transform_bronze_to_silver(raw_jobs: DataFrame) -> DataFrame:
         if column not in jobs.columns:
             jobs = jobs.withColumn(column, F.lit(None).cast(StringType()))
 
-    cleaned = jobs.select(
+    selected = jobs.select(
         F.sha2(
             F.concat_ws(
                 "||",
@@ -68,6 +69,8 @@ def transform_bronze_to_silver(raw_jobs: DataFrame) -> DataFrame:
         F.to_date(F.col("load_date")).alias("load_date"),
         F.to_timestamp(F.col("ingestion_timestamp")).alias("ingestion_timestamp"),
     )
+
+    cleaned = selected.withColumn("city", normalize_city(F.col("city"), F.col("region")))
 
     return (
         cleaned.where(F.col("source").isNotNull() & (F.length(F.trim(F.col("source"))) > 0))

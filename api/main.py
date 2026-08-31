@@ -15,9 +15,6 @@ SRC_PATH = PROJECT_ROOT / "src"
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-from jobmarket.extract.sample_data import get_sample_jobs
-
-
 app = FastAPI(
     title="JobMarket Data Platform API",
     description="REST API exposing job market analytics, skills and recommendations.",
@@ -55,7 +52,6 @@ def get_jobs(limit: int = Query(50, ge=1, le=500)) -> list[dict]:
     rows = _fetch_all(
         """
         SELECT
-            j.job_id,
             j.title,
             c.company_name,
             l.city,
@@ -72,12 +68,17 @@ def get_jobs(limit: int = Query(50, ge=1, le=500)) -> list[dict]:
         FROM analytics.fact_jobs j
         LEFT JOIN analytics.dim_company c ON j.company_id = c.company_id
         LEFT JOIN analytics.dim_location l ON j.location_id = l.location_id
+        WHERE l.country = 'France'
+          AND l.city IS NOT NULL
+          AND TRIM(l.city) <> ''
+          AND LOWER(l.city) NOT IN ('france', 'remote', 'teletravail', 'non renseignee')
+          AND POSITION('arrondissement' IN LOWER(l.city)) = 0
         ORDER BY j.publication_date DESC NULLS LAST
         LIMIT %s
         """,
         (limit,),
     )
-    return rows if rows is not None else _fallback_jobs(limit)
+    return rows if rows is not None else []
 
 
 @app.get("/companies")
@@ -85,7 +86,6 @@ def get_companies(limit: int = Query(50, ge=1, le=500)) -> list[dict]:
     rows = _fetch_all(
         """
         SELECT
-            c.company_id,
             c.company_name,
             COUNT(j.job_id) AS job_count
         FROM analytics.dim_company c
@@ -99,10 +99,7 @@ def get_companies(limit: int = Query(50, ge=1, le=500)) -> list[dict]:
     if rows is not None:
         return rows
 
-    counts: dict[str, int] = {}
-    for job in get_sample_jobs():
-        counts[job["company"]] = counts.get(job["company"], 0) + 1
-    return [{"company_name": company, "job_count": count} for company, count in counts.items()][:limit]
+    return []
 
 
 @app.get("/skills")
@@ -120,9 +117,7 @@ def get_skills(limit: int = Query(30, ge=1, le=100)) -> list[dict]:
     if rows is not None:
         return rows
 
-    jobs = " ".join(job["description"] for job in get_sample_jobs()).lower()
-    skills = ["Python", "SQL", "PySpark", "Azure", "Airflow", "Docker", "PostgreSQL", "FastAPI", "Spark"]
-    return [{"skill_name": skill, "job_count": jobs.count(skill.lower())} for skill in skills if jobs.count(skill.lower()) > 0]
+    return []
 
 
 @app.get("/recommendations")
@@ -136,8 +131,6 @@ def get_recommendations(
     rows = _fetch_all(
         """
         SELECT
-            recommendation_id,
-            job_id,
             title,
             company_name,
             city,
@@ -156,29 +149,7 @@ def get_recommendations(
     if rows is not None:
         return rows
 
-    requested_skills = [skill.strip().lower() for skill in skills.split(",") if skill.strip()]
-    fallback_rows = []
-    for job in get_sample_jobs():
-        description = f"{job['title']} {job['description']}".lower()
-        matched = sum(1 for skill in requested_skills if skill in description)
-        location_bonus = 3 if location.lower() in str(job["location_city"]).lower() else 0
-        contract_bonus = 2 if contract_type.upper() == str(job["contract_type"]).upper() else 0
-        experience_bonus = 1 if experience_level.lower() in description else 0
-        score = matched * 10 + location_bonus + contract_bonus + experience_bonus
-        fallback_rows.append(
-            {
-                "job_id": job["source_job_id"],
-                "title": job["title"],
-                "company_name": job["company"],
-                "city": job["location_city"],
-                "contract_type": job["contract_type"],
-                "salary_avg": _salary_avg(job),
-                "input_skills": skills,
-                "score": score,
-                "score_details": f"skills={matched} | location_bonus={location_bonus} | contract_bonus={contract_bonus}",
-            }
-        )
-    return sorted(fallback_rows, key=lambda row: row["score"], reverse=True)[:limit]
+    return []
 
 
 @app.get("/statistics")
@@ -191,6 +162,11 @@ def get_statistics() -> dict:
         SELECT l.city, COUNT(j.job_id) AS job_count
         FROM analytics.fact_jobs j
         JOIN analytics.dim_location l ON j.location_id = l.location_id
+        WHERE l.country = 'France'
+          AND l.city IS NOT NULL
+          AND TRIM(l.city) <> ''
+          AND LOWER(l.city) NOT IN ('france', 'remote', 'teletravail', 'non renseignee')
+          AND POSITION('arrondissement' IN LOWER(l.city)) = 0
         GROUP BY l.city
         ORDER BY job_count DESC
         LIMIT 10
@@ -214,55 +190,10 @@ def get_statistics() -> dict:
             "top_cities": top_cities or [],
             "top_skills": top_skills or [],
         }
-    return _fallback_statistics()
-
-
-def _fallback_jobs(limit: int) -> list[dict]:
-    return [
-        {
-            "job_id": job["source_job_id"],
-            "title": job["title"],
-            "company_name": job["company"],
-            "city": job["location_city"],
-            "region": job["location_region"],
-            "country": job["location_country"],
-            "contract_type": job["contract_type"],
-            "salary_min": job["salary_min"],
-            "salary_max": job["salary_max"],
-            "salary_avg": _salary_avg(job),
-            "publication_date": job["publication_date"],
-            "source": job["source"],
-            "source_url": job["url"],
-        }
-        for job in get_sample_jobs()[:limit]
-    ]
-
-
-def _fallback_statistics() -> dict:
-    jobs = get_sample_jobs()
-    companies = {job["company"] for job in jobs}
-    salaries = [_salary_avg(job) for job in jobs if _salary_avg(job) is not None]
-    city_counts: dict[str, int] = {}
-    for job in jobs:
-        city_counts[job["location_city"]] = city_counts.get(job["location_city"], 0) + 1
-
     return {
-        "job_count": len(jobs),
-        "company_count": len(companies),
-        "average_salary": round(sum(salaries) / len(salaries), 2),
-        "top_cities": [{"city": city, "job_count": count} for city, count in city_counts.items()],
-        "top_skills": get_skills(10),
+        "job_count": 0,
+        "company_count": 0,
+        "average_salary": None,
+        "top_cities": [],
+        "top_skills": [],
     }
-
-
-def _salary_avg(job: dict) -> float | None:
-    minimum = job.get("salary_min")
-    maximum = job.get("salary_max")
-    if minimum is None and maximum is None:
-        return None
-    if minimum is None:
-        return float(maximum)
-    if maximum is None:
-        return float(minimum)
-    return (float(minimum) + float(maximum)) / 2
-

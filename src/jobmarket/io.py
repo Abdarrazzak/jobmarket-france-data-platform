@@ -13,7 +13,11 @@ def read_json_as_spark(spark: SparkSession, path: Path) -> DataFrame:
     if not _use_python_local_io():
         return spark.read.option("recursiveFileLookup", "true").json(str(path))
 
-    files = [str(file_path.resolve()) for file_path in sorted(Path(path).rglob("jobs.jsonl"))]
+    files = [
+        str(file_path.resolve())
+        for file_path in sorted(Path(path).rglob("jobs.jsonl"))
+        if file_path.stat().st_size > 0
+    ]
     if not files:
         raise FileNotFoundError(f"No Bronze JSON records found under {path}")
     return spark.read.json(files)
