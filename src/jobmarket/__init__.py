@@ -1,0 +1,2 @@
+"""JobMarket Data Platform package."""
+

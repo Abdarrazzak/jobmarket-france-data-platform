@@ -1,0 +1,81 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: jobmarket-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-jobmarket}
+      POSTGRES_USER: ${POSTGRES_USER:-jobmarket}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobmarket}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-jobmarket} -d ${POSTGRES_DB:-jobmarket}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: jobmarket-api
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-jobmarket}
+      POSTGRES_USER: ${POSTGRES_USER:-jobmarket}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobmarket}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    container_name: jobmarket-dashboard
+    environment:
+      API_BASE_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+
+  airflow:
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    container_name: jobmarket-airflow
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      PYTHONPATH: /opt/airflow/src
+      BRONZE_PATH: /opt/airflow/data/local/bronze
+      SILVER_PATH: /opt/airflow/data/local/silver
+      GOLD_PATH: /opt/airflow/data/local/gold
+      QUALITY_REPORT_PATH: /opt/airflow/data/local/quality/quality_report.json
+      USER_PROFILE_PATH: /opt/airflow/configs/user_profile.json
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-jobmarket}
+      POSTGRES_USER: ${POSTGRES_USER:-jobmarket}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobmarket}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./scripts:/opt/airflow/scripts
+      - ./configs:/opt/airflow/configs
+      - ./data:/opt/airflow/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: standalone
+
+volumes:
+  postgres_data:
+

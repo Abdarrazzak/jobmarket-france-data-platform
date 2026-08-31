@@ -1,0 +1,8 @@
+{
+  "skills": ["Python", "SQL", "PySpark", "Azure"],
+  "location": "Paris",
+  "experience_level": "junior",
+  "contract_type": "CDI",
+  "top_n": 10
+}
+

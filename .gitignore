@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets and local configuration
+.env
+*.pem
+*.key
+
+# Local data and generated outputs
+data/local/
+data/tmp/
+logs/
+reports/
+
+# Airflow local state
+airflow.db
+airflow.cfg
+webserver_config.py
+
+# Spark local state
+spark-warehouse/
+metastore_db/
+derby.log
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
