@@ -3,8 +3,7 @@
 ## Projet
 
 **Nom :** JobMarket Data Platform
-**Auteur :** A.H
-**École :** Liora ex DataScientest
+**Auteur :** Abdarrazzak HOUTI
 **Périmètre :** analyse des offres d'emploi data en France
 **Version :** MVP local soutenable - septembre 2026
 **Moteur de transformation :** PySpark
