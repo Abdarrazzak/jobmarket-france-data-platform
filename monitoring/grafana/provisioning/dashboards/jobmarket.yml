@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: JobMarket
+    orgId: 1
+    folder: JobMarket
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

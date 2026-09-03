@@ -1,0 +1,101 @@
+{
+  "focus": {
+    "enabled": true,
+    "description": "Collecte high volume specialisee data sur le marche francais.",
+    "data_keywords": [
+      "data engineer",
+      "data analyst",
+      "data scientist",
+      "analytics engineer",
+      "business intelligence",
+      "bi analyst",
+      "machine learning",
+      "ml engineer",
+      "data architect",
+      "data manager",
+      "data product",
+      "consultant data",
+      "consultant bi",
+      "developpeur etl",
+      "ingenieur data",
+      "analyste data",
+      "chef de projet data",
+      "data governance",
+      "data steward",
+      "big data",
+      "etl",
+      "pyspark",
+      "spark",
+      "databricks",
+      "dbt",
+      "snowflake",
+      "power bi",
+      "tableau"
+    ],
+    "france_terms": [
+      "France",
+      "Paris",
+      "Ile-de-France",
+      "Lyon",
+      "Toulouse",
+      "Nantes",
+      "Lille",
+      "Bordeaux",
+      "Marseille",
+      "Rennes",
+      "Montpellier",
+      "Grenoble",
+      "Strasbourg",
+      "Nice",
+      "Sophia Antipolis",
+      "Aix-en-Provence"
+    ]
+  },
+  "adzuna": {
+    "enabled": true,
+    "country": "fr",
+    "results_per_page": 50,
+    "max_pages_per_search": 15,
+    "throttle_seconds": 2.7,
+    "sort_by": "date",
+    "queries": [
+      "data engineer",
+      "data analyst",
+      "data scientist",
+      "analytics engineer",
+      "business intelligence",
+      "bi analyst",
+      "machine learning engineer",
+      "data architect",
+      "data manager",
+      "data product owner",
+      "consultant data",
+      "consultant bi",
+      "developpeur etl",
+      "ingenieur data",
+      "chef de projet data",
+      "data governance"
+    ],
+    "locations": [
+      "France"
+    ]
+  },
+  "muse": {
+    "enabled": true,
+    "max_pages_per_search": 5,
+    "throttle_seconds": 0.5,
+    "categories": [
+      "Data Science"
+    ],
+    "locations": [
+      "France",
+      "Paris, France"
+    ]
+  },
+  "python_org_scraping": {
+    "enabled": false,
+    "max_pages": 2,
+    "throttle_seconds": 0.5,
+    "base_url": "https://www.python.org/jobs/"
+  }
+}

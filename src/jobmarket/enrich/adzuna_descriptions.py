@@ -104,7 +104,11 @@ def backfill_adzuna_descriptions_from_postgres(config: Settings = settings) -> d
     max_jobs = config.adzuna_description_backfill_max_jobs
     min_chars = config.adzuna_description_backfill_min_chars
     throttle_seconds = config.adzuna_description_backfill_throttle_seconds
-    scraper = AdzunaDescriptionScraper(max_description_chars=config.adzuna_description_backfill_max_chars)
+    scraper = AdzunaDescriptionScraper(
+        timeout_seconds=config.adzuna_description_backfill_timeout_seconds,
+        max_description_chars=config.adzuna_description_backfill_max_chars,
+        retries=config.adzuna_description_backfill_retries,
+    )
 
     connection = psycopg2.connect(
         host=config.postgres_host,
@@ -148,6 +152,7 @@ def backfill_adzuna_descriptions_from_postgres(config: Settings = settings) -> d
                 failed_jobs += 1
                 _log_backfill(connection, job_id, source_url, "failed", original_length, 0, str(exc)[:500])
 
+            connection.commit()
             time.sleep(throttle_seconds)
 
         refreshed_skills = refresh_fact_skills_from_postgres(connection)
@@ -322,12 +327,18 @@ def _fetch_adzuna_jobs(connection, max_jobs: int, min_chars: int) -> list[dict]:
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(
             """
-            SELECT job_id, source_url, COALESCE(description, '') AS description
-            FROM analytics.fact_jobs
-            WHERE source = 'adzuna'
-              AND source_url IS NOT NULL
-              AND LENGTH(COALESCE(description, '')) < %s
-            ORDER BY publication_date DESC NULLS LAST, job_id
+            SELECT j.job_id, j.source_url, COALESCE(j.description, '') AS description
+            FROM analytics.fact_jobs j
+            LEFT JOIN analytics.description_enrichment_log l ON j.job_id = l.job_id
+            WHERE j.source = 'adzuna'
+              AND j.source_url IS NOT NULL
+              AND LENGTH(COALESCE(j.description, '')) < %s
+              AND (
+                  l.job_id IS NULL
+                  OR l.status = 'updated'
+                  OR l.scraped_at < NOW() - INTERVAL '24 hours'
+              )
+            ORDER BY j.publication_date DESC NULLS LAST, j.job_id
             LIMIT %s
             """,
             (min_chars, max_jobs),

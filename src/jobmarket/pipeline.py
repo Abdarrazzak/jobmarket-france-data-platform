@@ -5,6 +5,8 @@ from jobmarket.enrich.adzuna_descriptions import backfill_adzuna_descriptions_fr
 from jobmarket.extract.bronze import write_bronze_manifest
 from jobmarket.extract.run_extractors import extract_adzuna, extract_muse, extract_web_scraping
 from jobmarket.load.postgres import load_gold_to_postgres
+from jobmarket.monitoring.pipeline_runs import execute_with_monitoring
+from jobmarket.profiling.report import generate_data_profile
 from jobmarket.quality.checks import run_quality_checks
 from jobmarket.recommendation.scoring import build_recommendations
 from jobmarket.spark import create_spark_session
@@ -23,6 +25,7 @@ PIPELINE_STEPS = [
     "extract_skills",
     "build_recommendations",
     "quality_checks",
+    "data_profile",
     "load_postgres",
     "backfill_adzuna_descriptions",
     "refresh_api",
@@ -58,6 +61,8 @@ def run_step(step: str, config: Settings = settings):
             return build_recommendations(spark, config.gold_path, config.user_profile_path)
         if step == "quality_checks":
             return run_quality_checks(spark, config.silver_path, config.quality_report_path)
+        if step == "data_profile":
+            return generate_data_profile(spark, config.silver_path, config.gold_path, config.data_profile_report_path)
         if step == "load_postgres":
             return load_gold_to_postgres(spark, config.gold_path, config)
     finally:
@@ -67,10 +72,10 @@ def run_step(step: str, config: Settings = settings):
 
 
 def run_all(config: Settings = settings, skip_postgres: bool = False) -> dict[str, object]:
-    results: dict[str, object] = {}
-    for step in PIPELINE_STEPS:
-        if skip_postgres and step in {"load_postgres", "backfill_adzuna_descriptions"}:
-            results[step] = "Skipped for local demo without PostgreSQL."
-            continue
-        results[step] = run_step(step, config)
-    return results
+    skip_steps = {"load_postgres", "backfill_adzuna_descriptions"} if skip_postgres else set()
+    return execute_with_monitoring(
+        PIPELINE_STEPS,
+        lambda step: run_step(step, config),
+        config.pipeline_runs_path,
+        skip_steps=skip_steps,
+    )

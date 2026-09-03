@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -28,12 +29,27 @@ def main() -> None:
     print(json.dumps(_stringify(result), indent=2))
 
 
-def _stringify(value):
+def _stringify(value: Any):
+    if isinstance(value, Path):
+        payload: dict[str, Any] = {"path": str(value)}
+        row_count = _count_rows_if_supported(value)
+        if row_count is not None:
+            payload["row_count"] = row_count
+        return payload
+    if value is None or isinstance(value, str | int | float | bool):
+        return value
     if isinstance(value, dict):
         return {key: _stringify(item) for key, item in value.items()}
     if isinstance(value, list):
         return [_stringify(item) for item in value]
     return str(value)
+
+
+def _count_rows_if_supported(path: Path) -> int | None:
+    if not path.is_file() or path.suffix.lower() not in {".jsonl", ".json"}:
+        return None
+    with path.open("r", encoding="utf-8") as file:
+        return sum(1 for line in file if line.strip())
 
 
 if __name__ == "__main__":

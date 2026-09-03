@@ -5,7 +5,8 @@
 Le Data Warehouse contient au minimum deux schemas :
 
 - `analytics` pour les tables analytiques ;
-- `serving` pour les vues ou tables optimisees pour l'API et le dashboard.
+- `serving` pour les vues ou tables optimisees pour l'API et le dashboard ;
+- `ml` pour les vues salaire optionnelles.
 
 ## Tables minimales
 
@@ -95,3 +96,46 @@ Colonnes attendues :
 - `enriched_length`
 - `error_message`
 - `scraped_at`
+
+## Vues serving
+
+### serving.jobs_public
+
+Vue lisible des offres pour FastAPI et Streamlit. Elle masque les details techniques inutiles a l'utilisateur et joint les entreprises et localisations.
+
+### serving.market_by_city
+
+Vue d'analyse de la volumetrie d'offres par ville, triee pour l'affichage du marche de l'emploi.
+
+### serving.skill_demand
+
+Vue de demande par competence detectee.
+
+## Vues salaire optionnelles
+
+### ml.salary_prediction_features
+
+Vue de features pour analyser les salaires disponibles et preparer une eventuelle prediction a partir des champs disponibles :
+
+- titre ;
+- entreprise ;
+- ville ;
+- region ;
+- contrat ;
+- experience ;
+- source ;
+- competences ;
+- salaire cible quand disponible ;
+- indicateur de qualite du salaire.
+
+### ml.salary_training_dataset
+
+Sous-ensemble exploitable pour entrainement, avec salaires presents et bornes metier coherentes.
+
+### ml.salary_inference_dataset
+
+Sous-ensemble contenant les offres sans salaire exploitable ou a predire.
+
+### ml.salary_prediction_metadata
+
+Vue de synthese pour piloter la qualite du dataset salaire : nombre de lignes, salaires minimum et maximum retenus, lignes exclues.

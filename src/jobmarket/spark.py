@@ -40,9 +40,9 @@ def _configure_local_java() -> None:
     if os.getenv("JAVA_HOME"):
         return
 
-    tableau_java_home = Path(r"C:\Program Files\Tableau\Tableau 2026.2\bin\jre")
-    if tableau_java_home.exists():
-        os.environ["JAVA_HOME"] = str(tableau_java_home)
+    local_java_home = os.getenv("JOBMARKET_LOCAL_JAVA_HOME")
+    if local_java_home and Path(local_java_home).exists():
+        os.environ["JAVA_HOME"] = _windows_short_path(local_java_home)
         return
 
     try:
@@ -54,16 +54,12 @@ def _configure_local_java() -> None:
 
 
 def _configure_local_hadoop() -> None:
-    if os.getenv("HADOOP_HOME"):
-        hadoop_bin = Path(os.environ["HADOOP_HOME"]) / "bin"
+    hadoop_home = os.getenv("HADOOP_HOME")
+    if hadoop_home:
+        hadoop_home_path = Path(hadoop_home)
+        os.environ["hadoop.home.dir"] = str(hadoop_home_path)
+        hadoop_bin = hadoop_home_path / "bin"
         os.environ["PATH"] = str(hadoop_bin) + os.pathsep + os.environ.get("PATH", "")
-        return
-
-    windows_hadoop_home = Path(r"C:\hadoop")
-    if windows_hadoop_home.exists():
-        os.environ["HADOOP_HOME"] = str(windows_hadoop_home)
-        os.environ["hadoop.home.dir"] = str(windows_hadoop_home)
-        os.environ["PATH"] = str(windows_hadoop_home / "bin") + os.pathsep + os.environ.get("PATH", "")
 
 
 def _windows_short_path(path: str) -> str:

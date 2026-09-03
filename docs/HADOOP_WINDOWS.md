@@ -9,15 +9,15 @@ Sous Windows, PySpark utilise des composants Hadoop pour lire et ecrire des fich
 Le projet utilise une installation minimale :
 
 ```text
-C:\hadoop
-C:\hadoop\bin\winutils.exe
-C:\hadoop\bin\hadoop.dll
+<chemin_hadoop_local>
+<chemin_hadoop_local>\bin\winutils.exe
+<chemin_hadoop_local>\bin\hadoop.dll
 ```
 
 Variable d'environnement :
 
 ```text
-HADOOP_HOME=C:\hadoop
+HADOOP_HOME=<chemin_hadoop_local>
 ```
 
 ## Pourquoi on ne met pas Hadoop dans le projet
@@ -25,7 +25,7 @@ HADOOP_HOME=C:\hadoop
 Hadoop est une dependance systeme locale, comme PostgreSQL ou Java. Le code et les donnees du projet restent dans :
 
 ```text
-C:\Users\abdho\Documents\Projet Fil Rouge
+<dossier_du_projet>
 ```
 
 ## Test de validation
@@ -41,4 +41,3 @@ Resultat attendu :
 - Silver vers Gold : OK
 - chargement PostgreSQL : OK
 - rapport qualite : PASS
-

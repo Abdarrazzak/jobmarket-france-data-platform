@@ -19,8 +19,24 @@ env/
 # Local data and generated outputs
 data/local/
 data/tmp/
+tmp/
+temp/
 logs/
+logapp/
+logctm/
 reports/
+*.log
+*.out
+*.err
+*.msi
+
+# Hadoop/YARN local runtime logs
+yarn-logs/
+
+# Local presentation exports not published to GitHub
+*.pptx
+*.pptx.inspect.ndjson
+*.docx
 
 # Airflow local state
 airflow.db
@@ -37,4 +53,3 @@ derby.log
 .vscode/
 .DS_Store
 Thumbs.db
-

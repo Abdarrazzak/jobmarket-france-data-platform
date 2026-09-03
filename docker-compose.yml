@@ -4,14 +4,14 @@ services:
     container_name: jobmarket-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-jobmarket}
-      POSTGRES_USER: ${POSTGRES_USER:-jobmarket}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobmarket}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-jobmarket} -d ${POSTGRES_DB:-jobmarket}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?Set POSTGRES_USER in .env} -d ${POSTGRES_DB:-jobmarket}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,8 +25,8 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${POSTGRES_DB:-jobmarket}
-      POSTGRES_USER: ${POSTGRES_USER:-jobmarket}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobmarket}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
       - "8000:8000"
     depends_on:
@@ -53,16 +53,20 @@ services:
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       PYTHONPATH: /opt/airflow/src
+      JOBMARKET_AIRFLOW_SCHEDULE: ${JOBMARKET_AIRFLOW_SCHEDULE:-@daily}
+      ADZUNA_APP_ID: ${ADZUNA_APP_ID:?Set ADZUNA_APP_ID in .env}
+      ADZUNA_APP_KEY: ${ADZUNA_APP_KEY:?Set ADZUNA_APP_KEY in .env}
       BRONZE_PATH: /opt/airflow/data/local/bronze
       SILVER_PATH: /opt/airflow/data/local/silver
       GOLD_PATH: /opt/airflow/data/local/gold
       QUALITY_REPORT_PATH: /opt/airflow/data/local/quality/quality_report.json
+      EXTRACTION_PLAN_PATH: /opt/airflow/${EXTRACTION_PLAN_PATH:-configs/extraction_plan.json}
       USER_PROFILE_PATH: /opt/airflow/configs/user_profile.json
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${POSTGRES_DB:-jobmarket}
-      POSTGRES_USER: ${POSTGRES_USER:-jobmarket}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobmarket}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
       - "8080:8080"
     volumes:
@@ -76,6 +80,32 @@ services:
         condition: service_healthy
     command: standalone
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: jobmarket-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: jobmarket-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
 volumes:
   postgres_data:
-
+  grafana_data:
