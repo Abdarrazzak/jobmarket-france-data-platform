@@ -15,7 +15,6 @@ Approche iterative :
 5. Chargement PostgreSQL.
 6. API et dashboard.
 7. Qualite et documentation.
-8. Preparation soutenance.
 
 ## Planning synthetique
 
@@ -29,7 +28,6 @@ Approche iterative :
 | Restitution | API et dashboard | Swagger + Streamlit |
 | Monitoring | Surveiller disponibilite et qualite | Prometheus + Grafana |
 | Qualite | Tester et controler | Rapport PASS |
-| Soutenance | Formaliser les preuves | PPT + Markdown |
 
 ## Suivi des risques
 
@@ -65,7 +63,7 @@ Pour faciliter la reprise :
 - endpoints API simples ;
 - dashboard Streamlit navigable ;
 - scripts d'execution par etape ;
-- docs de soutenance synthetiques ;
+- documentation projet synthetique ;
 - choix techniques expliques dans les livrables.
 
 ## Decisions importantes
