@@ -72,12 +72,12 @@ Exclu ou limite :
 
 ## Resultats obtenus
 
-- 797 offres Adzuna France chargees.
-- 397 entreprises distinctes.
-- 141 localisations.
-- 325 lignes de competences apres enrichissement HTML.
+- 2 028 offres Adzuna France chargees.
+- 793 entreprises distinctes.
+- 266 localisations.
+- 773 lignes de competences apres enrichissement HTML.
 - 10 recommandations generees.
-- 797 lignes de features salaire, dont 158 exploitables pour entrainement.
+- 2 028 lignes de features salaire, dont 380 exploitables pour entrainement et 1 648 a predire ou incompletes.
 - 0 donnees d'exemple dans la base finale.
 
 ## Risques identifies

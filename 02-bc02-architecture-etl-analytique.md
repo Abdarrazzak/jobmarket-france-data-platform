@@ -127,9 +127,9 @@ Solution :
 
 Resultat final verifie :
 
-- 11 descriptions mises a jour lors du dernier backfill.
-- 3 descriptions ignorees car aucune version plus longue n'etait disponible.
-- 325 lignes de competences extraites.
+- 49 descriptions mises a jour lors du dernier backfill.
+- 1 description ignoree car aucune version plus longue n'etait disponible.
+- 773 lignes de competences extraites.
 
 ## Vues salaire optionnelles
 
@@ -184,7 +184,7 @@ Dernier rapport :
 
 ```text
 status = PASS
-total_rows = 797
+total_rows = 2028
 duplicate_job_ids = 0
 ```
 

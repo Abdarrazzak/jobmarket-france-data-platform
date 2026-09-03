@@ -15,7 +15,6 @@ Le projet collecte de vraies offres d'emploi, les historise dans une logique Dat
 - `04-bc04-pilotage-accompagnement.md` : pilotage projet, qualite, risques, accompagnement.
 - `05-bc04-analyse-financiere.md` : estimation financiere et arbitrages couts.
 - `06-cahier-des-charges.md` : cahier des charges fonctionnel et technique.
-- `06-cahier-des-charges.docx` : version Word adaptee a partir de l'exemple fourni.
 - `07-rapport-final-consolide.md` : rapport final consolide couvrant conclusion, Git, secrets, deploiement, monitoring, bilan, suite, bibliographie et annexes.
 
 ## Etat valide apres chargement high volume

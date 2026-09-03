@@ -88,7 +88,10 @@ Les anciennes sources `*_sample` ont ete supprimees du pipeline final. La base n
 
 ## Indicateurs de pilotage
 
-- 797 offres reelles chargees.
+- 2 028 offres reelles chargees.
+- 793 entreprises distinctes.
+- 266 localisations normalisees.
+- 773 lignes de competences detectees.
 - 0 doublon detecte.
 - 0 source sample.
 - 0 URL example.com.

@@ -124,6 +124,6 @@ Resultats attendus pour une demo stable :
 
 - `jobmarket_api_up = 1` ;
 - `jobmarket_postgres_up = 1` ;
-- `jobmarket_jobs_total = 797` ;
+- `jobmarket_jobs_total = 2028` ;
 - `jobmarket_quality_status = 1` ;
 - `jobmarket_quality_blocking_issues_total = 0`.
