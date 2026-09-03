@@ -120,7 +120,6 @@ Les logs ne doivent pas afficher de clés API, mots de passe ou jetons. Un contr
 | Développement de l'application | 8 mois | Avril 2026 |
 | Tests et validation | 2 mois | Juin 2026 |
 | Déploiement et maintenance | 2 mois | Août 2026 |
-| Soutenance | — | Sept 2026 |
 
 ## 5. Budget prévisionnel
 
@@ -148,7 +147,6 @@ Le projet est construit en priorité avec des composants open-source afin de res
 - Alertes mail avec prévisualisation et SMTP optionnel.
 - Documentation Markdown par bloc de compétences.
 - Cahier des charges adapté au projet.
-- Présentation PowerPoint de soutenance.
 
 ## 7. Utilisateurs finaux
 
