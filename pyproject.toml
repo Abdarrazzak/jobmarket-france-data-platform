@@ -27,7 +27,6 @@ dashboard = [
     "streamlit>=1.35",
 ]
 pipeline = [
-    "azure-storage-file-datalake>=12.14",
     "pyarrow>=15.0",
     "pyspark==4.0.1",
 ]
@@ -39,7 +38,6 @@ windows = [
 ]
 all = [
     "altair>=5.0",
-    "azure-storage-file-datalake>=12.14",
     "fastapi>=0.111",
     "pyarrow>=15.0",
     "pyspark==4.0.1",

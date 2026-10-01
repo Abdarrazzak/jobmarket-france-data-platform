@@ -33,7 +33,7 @@ reports/
 # Hadoop/YARN local runtime logs
 yarn-logs/
 
-# Local presentation exports not published to GitHub
+# Local
 *.pptx
 *.pptx.inspect.ndjson
 *.docx

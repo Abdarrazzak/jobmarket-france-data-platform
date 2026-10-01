@@ -2,7 +2,34 @@
 
 ## Objectif
 
-Cette roadmap presente les travaux par mois, depuis le cadrage jusqu'a la soutenance. Elle donne une vision projet plus realiste qu'une liste de taches par jour.
+Cette roadmap presente les travaux par mois, depuis le cadrage jusqu'a la livraison finale. Elle donne une vision projet plus realiste qu'une liste de taches par jour.
+
+## Roadmap visuelle
+
+Le visuel ci-dessous resume le cheminement technique du projet, depuis les sources jusqu'au monitoring et a la trajectoire Azure.
+
+![Architecture globale JobMarket](assets/jobmarket-architecture-globale.png)
+
+```mermaid
+flowchart LR
+    A[Cadrage metier<br/>personas, besoin, perimetre France/data]
+    B[Collecte<br/>Adzuna API, The Muse API, scraping encadre]
+    C[Data Lake local<br/>Bronze JSONL, Silver Parquet, Gold Parquet]
+    D[Data Warehouse<br/>PostgreSQL analytics, serving, ml]
+    E[Restitution<br/>FastAPI, Streamlit, recherche, recommandations]
+    F[Automatisation<br/>Airflow, frequence configurable]
+    G[Monitoring<br/>Prometheus, Grafana, controles qualite]
+    H[Cible production Azure<br/>ADLS Gen2, Databricks, Key Vault, Azure Monitor]
+
+    A --> B --> C --> D --> E
+    F --> B
+    F --> C
+    G --> E
+    D --> G
+    C -. industrialisation .-> H
+    D -. industrialisation .-> H
+    E -. industrialisation .-> H
+```
 
 ## Planning mensuel
 
@@ -29,7 +56,7 @@ Cette roadmap presente les travaux par mois, depuis le cadrage jusqu'a la souten
 | Juin 2026 | Tests et validation : API, pipeline, PostgreSQL, monitoring, securite des secrets. | Suite de tests automatisee, scan secrets. |
 | Juillet 2026 | Amelioration UX du dashboard, nettoyage des donnees, suppression des samples et URLs d'exemple. | Dashboard final, qualite data PASS. |
 | Aout 2026 | Deploiement local et Docker Compose, Airflow, Prometheus, Grafana, documentation de reprise. | Services conteneurises, monitoring, scripts de relance. |
-| Septembre 2026 | Finalisation du rapport, cahier des charges, support de soutenance et verification finale. | Livrables jury, rapport final consolide, demonstration. |
+| Septembre 2026 | Finalisation du rapport, cahier des charges, documentation et verification finale. | Livrables projet, rapport final consolide, demonstration. |
 
 ## Jalons de validation
 
@@ -42,7 +69,7 @@ Cette roadmap presente les travaux par mois, depuis le cadrage jusqu'a la souten
 | Automatisation | DAG Airflow planifie en quotidien ou hebdomadaire. |
 | Monitoring | Prometheus collecte `/metrics` et Grafana affiche les indicateurs. |
 | Securite | Secrets dans `.env`, scan anti-fuite OK, pas de mot de passe en clair dans Git. |
-| Soutenance | Rapport final, cahier des charges et demo prets. |
+| Livraison finale | Rapport final, cahier des charges et demo prets. |
 
 ## Sprint final
 
@@ -52,4 +79,4 @@ Priorites de finalisation :
 2. Verifier que les tests passent et que le scan secrets est OK.
 3. Mettre a jour les livrables jury : rapport final, cahier des charges, README de transmission.
 4. Remplacer le placeholder du lien Git par l'URL reelle du depot.
-5. Ajouter ou finaliser le support PowerPoint de soutenance.
+5. Ajouter ou finaliser le support de presentation local.

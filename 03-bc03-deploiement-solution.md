@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Le deploiement doit permettre de lancer la plateforme localement pour la soutenance et de decrire une trajectoire cloud vers Azure.
+Le deploiement permet de lancer la plateforme localement pour la demonstration et de decrire une trajectoire cloud vers Azure.
 
 ## Prerequis locaux
 
@@ -190,4 +190,4 @@ En cas de probleme :
 
 ## Conclusion BC03
 
-La solution est demonstrable localement, conteneurisable avec Docker Compose et portable vers Azure avec une separation claire entre stockage, traitement, orchestration et exposition applicative.
+La solution est demonstrable localement et conteneurisable avec Docker Compose. Cette architecture constitue une base pour une future evolution vers Azure, qui demanderait une configuration et une validation de deploiement specifiques.

@@ -45,6 +45,12 @@ Fonctionnalites livrees :
 
 ## Architecture technique globale
 
+### Vue globale du pipeline
+
+![Architecture globale JobMarket](docs/assets/jobmarket-architecture-globale.png)
+
+Dans le MVP, le Data Lake est stocke localement sous `data/local/`, en couches Bronze, Silver et Gold. Azure est uniquement une cible d'evolution.
+
 ```text
 Adzuna API + The Muse API + web scraping optionnel
         |
@@ -78,6 +84,27 @@ PostgreSQL Data Warehouse
         +--> Prometheus
                +--> Grafana
 ```
+
+## Modele de donnees PostgreSQL
+
+Le Data Warehouse PostgreSQL repose sur un modele relationnel simple et explicable. La table centrale est `analytics.fact_jobs`. Elle contient les offres finales, puis se relie aux dimensions entreprise et localisation. Les competences, recommandations et traces d'enrichissement sont rattachees aux offres par `job_id`.
+
+![Modele relationnel PostgreSQL JobMarket](docs/assets/jobmarket-modele-postgresql.png)
+
+Les liens du schema representent les identifiants utilises dans les jointures. Dans le MVP, les contraintes `FOREIGN KEY` physiques ne sont pas declarees.
+
+```mermaid
+erDiagram
+    DIM_COMPANY ||--o{ FACT_JOBS : company_id
+    DIM_LOCATION ||--o{ FACT_JOBS : location_id
+    FACT_JOBS ||--o{ FACT_SKILLS : job_id
+    FACT_JOBS ||--o{ JOB_RECOMMENDATIONS : job_id
+    FACT_JOBS ||--o{ DESCRIPTION_ENRICHMENT_LOG : job_id
+```
+
+Reponse courte si le jury demande s'il existe une relation entre les tables :
+
+> Oui. Le modele est proche d'un schema en etoile : `fact_jobs` est la table centrale, `dim_company` et `dim_location` sont les dimensions, et `fact_skills`, `job_recommendations` et `description_enrichment_log` sont reliees aux offres par `job_id`. Ces relations alimentent les vues `serving` pour l'API/dashboard et les vues `ml` pour l'analyse salaire.
 
 L'architecture cible cloud est concue pour Azure :
 
@@ -463,3 +490,13 @@ Ces sources ont servi a cadrer les choix d'architecture, les connecteurs, les tr
 | `ml.salary_training_dataset` | Donnees exploitables pour entrainement |
 | `ml.salary_inference_dataset` | Donnees incompletes ou a predire |
 | `ml.salary_prediction_metadata` | Statistiques salaire |
+
+### Annexe E - Relations principales du Data Warehouse
+
+| Relation | Cardinalite | Usage |
+| --- | --- | --- |
+| `dim_company.company_id` -> `fact_jobs.company_id` | 1 entreprise -> N offres | Analyser les entreprises qui recrutent. |
+| `dim_location.location_id` -> `fact_jobs.location_id` | 1 localisation -> N offres | Produire les graphiques par ville et region. |
+| `fact_jobs.job_id` -> `fact_skills.job_id` | 1 offre -> N competences | Mesurer la demande en technologies. |
+| `fact_jobs.job_id` -> `job_recommendations.job_id` | 1 offre -> 0 ou N recommandations | Expliquer les scores de recommandation. |
+| `fact_jobs.job_id` -> `description_enrichment_log.job_id` | 1 offre -> 0 ou 1 ligne | Conserver le dernier statut du backfill HTML Adzuna. |

@@ -4,6 +4,8 @@
 
 L'architecture suit une logique ELT moderne :
 
+![Architecture globale JobMarket](docs/assets/jobmarket-architecture-globale.png)
+
 ```text
 Adzuna API + The Muse API + Web scraping optionnel
         |
@@ -37,7 +39,7 @@ En cible cloud, les couches de donnees sont portees par Azure Data Lake Storage 
 - Container `silver` : donnees nettoyees et harmonisees, format Parquet.
 - Container `gold` : donnees metier pretes pour l'analyse.
 
-Les traitements PySpark peuvent etre executes localement pour la soutenance, puis portes vers Azure Databricks ou Synapse Spark dans une version industrialisee.
+Les traitements PySpark sont actuellement executes localement. Ils pourraient etre portes vers Azure Databricks ou Synapse Spark dans une version industrialisee.
 
 ## Sources de donnees
 
@@ -99,6 +101,25 @@ Tables produites :
 - `statistics` ;
 - `skill_trends` ;
 - vues `ml.salary_*` pour l'analyse salaire optionnelle.
+
+### Modele relationnel PostgreSQL
+
+Dans PostgreSQL, le Data Warehouse est organise autour d'une table centrale d'offres et de dimensions.
+
+![Modele relationnel PostgreSQL JobMarket](docs/assets/jobmarket-modele-postgresql.png)
+
+```mermaid
+erDiagram
+    DIM_COMPANY ||--o{ FACT_JOBS : company_id
+    DIM_LOCATION ||--o{ FACT_JOBS : location_id
+    FACT_JOBS ||--o{ FACT_SKILLS : job_id
+    FACT_JOBS ||--o{ JOB_RECOMMENDATIONS : job_id
+    FACT_JOBS ||--o{ DESCRIPTION_ENRICHMENT_LOG : job_id
+```
+
+`fact_jobs` contient les offres. `dim_company` evite de repeter les informations entreprises. `dim_location` normalise les villes et regions. `fact_skills` contient les competences detectees avec plusieurs competences possibles par offre. `job_recommendations` rattache les scores de recommandation aux offres. `description_enrichment_log` conserve la derniere ligne de suivi d'enrichissement HTML Adzuna pour chaque offre.
+
+Ce choix facilite les jointures SQL pour l'API, le dashboard et les vues salaire, tout en gardant une structure lisible pour le jury.
 
 ## Usage de PySpark
 

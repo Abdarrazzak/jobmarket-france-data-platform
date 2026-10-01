@@ -2,12 +2,12 @@
 
 ## Objectif
 
-JobMarket Data Platform est un projet Data Engineering qui analyse le marche de l'emploi a partir de plusieurs sources d'offres.
+JobMarket Data Platform est un projet Data Engineering qui analyse le marche de l'emploi a partir de plusieurs sources d'offres. Le MVP actuel est execute localement.
 
 Le projet doit demontrer :
 
 - une ingestion multi-sources ;
-- un Data Lake Azure en couches Bronze, Silver et Gold ;
+- un Data Lake local dans `data/local/`, organise en couches Bronze, Silver et Gold ;
 - des transformations PySpark ;
 - une orchestration avec Apache Airflow ;
 - un Data Warehouse PostgreSQL ;
@@ -20,7 +20,7 @@ Le projet doit demontrer :
 - une execution conteneurisee avec Docker ;
 - une documentation professionnelle.
 
-## Architecture cible
+## Architecture actuelle du MVP
 
 ```text
 Adzuna API + The Muse API
@@ -29,7 +29,7 @@ Adzuna API + The Muse API
 Apache Airflow
         |
         v
-Azure Data Lake Storage Gen2
+Data Lake local (`data/local/`)
         |
         +--> Bronze: JSON brut historise
         |
@@ -46,6 +46,8 @@ PostgreSQL Data Warehouse
         |
         +--> Prometheus + Grafana
 ```
+
+Azure Data Lake Storage Gen2, Azure Databricks ou Synapse Spark et les services Azure associes sont une projection pour une future industrialisation. Aucun stockage ni identifiant Azure n'est necessaire pour executer le MVP.
 
 ## Structure du depot
 
@@ -68,7 +70,7 @@ pyproject.toml         Packaging, dependances et configuration pytest
 1. Creer un environnement Python.
 2. Installer les dependances.
 3. Copier `.env.example` vers `.env`.
-4. Renseigner les identifiants API et Azure.
+4. Renseigner les cles API et les parametres locaux necessaires dans `.env`.
 5. Lancer les tests.
 
 ```powershell

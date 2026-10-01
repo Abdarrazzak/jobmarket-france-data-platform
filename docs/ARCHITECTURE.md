@@ -4,7 +4,11 @@
 
 Cette architecture separe clairement la collecte, le stockage, la transformation, la mise a disposition et la visualisation.
 
-## Flux cible
+## Vue visuelle
+
+![Architecture globale JobMarket](assets/jobmarket-architecture-globale.png)
+
+## Flux du MVP local
 
 ```text
 Sources API
@@ -16,7 +20,7 @@ Sources API
 Airflow orchestre les etapes
         |
         v
-Azure Data Lake Storage Gen2
+Data Lake local (`data/local/`)
   - bronze: donnees brutes JSON, jamais modifiees
   - silver: donnees nettoyees au format Parquet
   - gold: donnees enrichies au format Parquet
@@ -34,11 +38,13 @@ FastAPI + Streamlit
 
 Airflow ne contient pas la logique metier. Il lance les taches dans le bon ordre, surveille les echecs et rend le pipeline lisible.
 
-Azure Data Lake Storage Gen2 conserve les fichiers. Il garde l'historique complet en Bronze et les datasets propres en Silver et Gold.
+Dans le MVP, le Data Lake est constitue de fichiers locaux sous `data/local/`, organises en Bronze, Silver et Gold. Bronze conserve les donnees brutes, Silver contient les donnees nettoyees et Gold regroupe les jeux de donnees analytiques.
 
 PySpark realise les transformations lourdes : nettoyage, harmonisation, enrichissement, extraction des competences, recommandations simples et aggregations.
 
 PostgreSQL sert de Data Warehouse pour les tables structurees interrogees par l'API et le dashboard.
+
+Azure Data Lake Storage Gen2 et Azure Database for PostgreSQL sont des options de deploiement cible, pas des services utilises par le MVP local.
 
 Une etape complementaire enrichit les descriptions Adzuna apres le chargement PostgreSQL. Elle lit les URLs Adzuna stockees dans `analytics.fact_jobs`, scrape la page HTML de detail, remplace la description tronquee quand une version plus longue est disponible, puis rafraichit les competences et recommandations en base.
 

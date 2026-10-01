@@ -25,7 +25,7 @@ Les offres d'emploi sont dispersees sur plusieurs sources. Les descriptions sont
 - Mettre a disposition une recherche interactive et des vues salaire optionnelles.
 - Exposer les resultats via API et dashboard.
 - Superviser la plateforme avec Prometheus et Grafana.
-- Fournir une architecture cible deployable sur Azure.
+- Documenter une trajectoire d'evolution possible vers Azure.
 
 ## Perimetre fonctionnel
 
@@ -52,7 +52,7 @@ Exclu ou limite :
 - LinkedIn non utilise.
 - Web scraping non bloquant.
 - Modele de recommandation volontairement simple et explicable.
-- Azure Data Lake Gen2 documente comme cible, mais demonstration locale realisee dans `data/local`.
+- Azure Data Lake Gen2 presente comme piste d'evolution ; le MVP utilise le stockage local `data/local`.
 
 ## Utilisateurs cibles
 

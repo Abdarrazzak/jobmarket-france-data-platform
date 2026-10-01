@@ -43,7 +43,7 @@ def test_env_example_uses_placeholders_for_api_keys() -> None:
     env_example = Path(".env.example").read_text(encoding="utf-8")
 
     assert "ADZUNA_APP_KEY=replace_me" in env_example
-    assert "AZURE_STORAGE_KEY=replace_me" in env_example
+    assert "AZURE_STORAGE_KEY=" not in env_example
 
 
 def test_publishable_files_do_not_contain_postgres_demo_password() -> None:

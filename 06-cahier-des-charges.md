@@ -131,7 +131,7 @@ Le projet est construit en priorité avec des composants open-source afin de res
 | API Adzuna en accès développeur | 0 € en phase projet |
 | Connecteur The Muse et scraping encadré | 0 € hors maintenance |
 | Exécution locale et base PostgreSQL locale | 0 € |
-| Hébergement Azure cible pour MVP | Environ 80 à 350 €/mois selon volumétrie |
+| Scénario Azure futur, hors MVP local | Environ 80 à 350 €/mois selon volumétrie |
 | Temps humain projet étudiant | Non facturé dans le budget technique |
 
 ## 6. Livrables
