@@ -102,9 +102,7 @@ erDiagram
     FACT_JOBS ||--o{ DESCRIPTION_ENRICHMENT_LOG : job_id
 ```
 
-Reponse courte si le jury demande s'il existe une relation entre les tables :
-
-> Oui. Le modele est proche d'un schema en etoile : `fact_jobs` est la table centrale, `dim_company` et `dim_location` sont les dimensions, et `fact_skills`, `job_recommendations` et `description_enrichment_log` sont reliees aux offres par `job_id`. Ces relations alimentent les vues `serving` pour l'API/dashboard et les vues `ml` pour l'analyse salaire.
+Le modele s'apparente a un schema en etoile : `fact_jobs` constitue la table centrale, `dim_company` et `dim_location` apportent les dimensions entreprise et localisation, tandis que `fact_skills`, `job_recommendations` et `description_enrichment_log` sont rattachees aux offres par `job_id`. Les vues `serving` exposent les donnees a l'API et au dashboard, et les vues `ml` preparent les donnees pour l'analyse des salaires.
 
 L'architecture cible cloud est concue pour Azure :
 
@@ -236,9 +234,7 @@ Secrets concernes :
 - identifiants SMTP ;
 - cles Azure si le deploiement cloud est active.
 
-Reponse courte au jury :
-
-> Les secrets ne sont jamais affiches dans Streamlit, FastAPI, GitHub ou les logs. En local, ils sont lus depuis `.env`, qui est ignore par Git. Le depot contient uniquement `.env.example` avec des valeurs fictives. Avant publication, un script anti-secret verifie que les vraies valeurs locales ne sont pas presentes dans les fichiers versionnes. En production Azure, ces secrets seraient stockes dans Azure Key Vault.
+Cette organisation maintient les secrets hors du code, des interfaces et des logs. En local, l'application les lit depuis `.env`, ignore par Git ; le depot ne contient que `.env.example` avec des valeurs fictives. Le script anti-secret verifie avant publication qu'aucune valeur locale n'apparait dans les fichiers du projet. Dans une future production Azure, les secrets seraient geres dans Azure Key Vault.
 
 ## Deploiement
 
