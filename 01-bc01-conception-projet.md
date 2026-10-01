@@ -59,7 +59,6 @@ Exclu ou limite :
 - Candidat data : comprendre les competences a renforcer.
 - Responsable formation : identifier les technologies a enseigner.
 - Recruteur : visualiser les villes, entreprises et tendances.
-- Jury : evaluer la maitrise du cycle Data Engineering complet.
 
 ## Indicateurs de succes
 

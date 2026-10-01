@@ -77,6 +77,6 @@ Priorites de finalisation :
 
 1. Stabiliser la demo locale avec PostgreSQL, FastAPI, Streamlit, Prometheus et Grafana.
 2. Verifier que les tests passent et que le scan secrets est OK.
-3. Mettre a jour les livrables jury : rapport final, cahier des charges, README de transmission.
+3. Mettre a jour les livrables projet : rapport final, cahier des charges et README de transmission.
 4. Remplacer le placeholder du lien Git par l'URL reelle du depot.
 5. Ajouter ou finaliser le support de presentation local.

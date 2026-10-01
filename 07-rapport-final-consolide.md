@@ -184,7 +184,7 @@ dashboard/             Application Streamlit
 dags/                  DAG Airflow
 src/jobmarket/         Code metier du pipeline
 configs/               Plans de collecte et profils utilisateur
-docs/                  Documentation technique et soutenance
+docs/                  Documentation technique et livrables projet
 monitoring/            Prometheus et Grafana
 scripts/               Scripts de lancement et maintenance
 tests/                 Tests automatises

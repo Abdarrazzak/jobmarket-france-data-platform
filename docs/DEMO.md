@@ -1,8 +1,8 @@
-# Script de demonstration
+# Guide de demonstration locale
 
 ## Objectif
 
-Cette page sert de guide de soutenance rapide. Elle explique quoi montrer si tu as peu de temps.
+Cette page decrit le lancement local de la plateforme et les controles a effectuer apres execution du pipeline.
 
 ## Demo complete avec Docker
 
@@ -138,7 +138,7 @@ jobmarket_jobs_total
 jobmarket_quality_blocking_issues_total
 ```
 
-Pour la soutenance, l'interpretation attendue est simple : API disponible, PostgreSQL disponible, 2 028 offres chargees et 0 anomalie qualite bloquante.
+Les indicateurs ci-dessus permettent de verifier la disponibilite de l'API et de PostgreSQL, le volume charge et l'absence d'anomalie qualite bloquante.
 
 ## Resultats attendus
 
@@ -164,9 +164,3 @@ Le fichier `configs/extraction_plan.json` pilote le volume d'extraction :
 Pour augmenter le volume, augmenter progressivement `max_pages_per_search`. Le plan actuel utilise peu de localisations et plus de pages par metier, afin de limiter les doublons et de rester dans les quotas Adzuna.
 
 Le fichier `configs/extraction_plan_high_volume.json` est le preset conseille pour viser 2000+ offres : `16 requetes x 15 pages x 50 resultats`, soit jusqu'a 12000 resultats bruts avant dedoublonnage et filtres qualite.
-
-## Discours court pour le jury
-
-Le projet interroge Adzuna et The Muse, avec un module web scraping optionnel. Le dataset final valide contient uniquement de vraies offres Adzuna France, car les sources hors perimetre France/data sont filtrees ou desactivees. Le plan de collecte cible les metiers data comme Data Engineer, Data Analyst, Data Scientist, Analytics Engineer, BI Analyst et Machine Learning Engineer. Les donnees brutes sont conservees en Bronze au format JSON avec une historisation par date et par run. PySpark lit ensuite la couche Bronze, nettoie et harmonise les colonnes dans Silver, puis cree les tables Gold pour l'analyse metier. Les competences sont extraites automatiquement par expressions regulieres Spark sans UDF. Le moteur de recommandation applique un score explicable base sur les competences, la localisation, le contrat et le niveau. Les donnees Gold sont chargees dans PostgreSQL, puis exposees par FastAPI et visualisees dans Streamlit. Airflow orchestre les etapes, Docker Compose lance les composants.
-
-Point important sur Adzuna : l'API peut renvoyer une description courte. Pour ameliorer l'extraction des competences, une etape lit les URLs Adzuna stockees dans PostgreSQL, recupere la page HTML de detail, extrait une description plus longue quand elle existe, puis rafraichit `fact_skills` et `job_recommendations`. Le dernier etat local indique 49 descriptions mises a jour, 1 ignoree car aucune version plus longue n'etait disponible, et 773 lignes de competences en base.

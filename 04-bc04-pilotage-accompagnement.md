@@ -2,7 +2,7 @@
 
 ## Objectif du pilotage
 
-Le pilotage vise a livrer une plateforme Data Engineering demonstrable, maintenable et comprehensible par un jury technique.
+Le pilotage vise a livrer une plateforme Data Engineering demonstrable, maintenable et comprehensible par les utilisateurs et les equipes techniques.
 
 ## Methode projet
 

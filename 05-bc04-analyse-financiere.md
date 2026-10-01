@@ -6,7 +6,7 @@ Cette analyse estime les couts d'une industrialisation cloud du projet JobMarket
 
 ## Version actuelle
 
-La version de soutenance fonctionne localement :
+Le MVP fonctionne localement :
 
 - stockage local `data/local` ;
 - PostgreSQL local ;
@@ -70,9 +70,9 @@ Sans pipeline automatise :
 - absence de controle qualite ;
 - decisions formation ou candidature moins fiables.
 
-## Arbitrage retenu pour la soutenance
+## Choix du deploiement local
 
-La demonstration locale est privilegiee pour maitriser le temps, eviter les surprises de facturation et prouver la chaine technique.
+Le deploiement local permet de valider la chaine technique sans engager de cout d'infrastructure Azure pendant la phase MVP.
 
 L'architecture Azure est documentee pour montrer la trajectoire industrielle sans imposer un cout cloud pendant la phase projet.
 

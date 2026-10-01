@@ -119,7 +119,7 @@ erDiagram
 
 `fact_jobs` contient les offres. `dim_company` evite de repeter les informations entreprises. `dim_location` normalise les villes et regions. `fact_skills` contient les competences detectees avec plusieurs competences possibles par offre. `job_recommendations` rattache les scores de recommandation aux offres. `description_enrichment_log` conserve la derniere ligne de suivi d'enrichissement HTML Adzuna pour chaque offre.
 
-Ce choix facilite les jointures SQL pour l'API, le dashboard et les vues salaire, tout en gardant une structure lisible pour le jury.
+Ce choix facilite les jointures SQL pour l'API, le dashboard et les vues salaire, tout en gardant une structure claire et maintenable.
 
 ## Usage de PySpark
 
