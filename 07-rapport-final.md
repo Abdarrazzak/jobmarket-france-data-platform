@@ -1,4 +1,4 @@
-# 07 - Rapport final consolide
+# 07 - Rapport final
 
 ## Introduction
 
@@ -206,11 +206,7 @@ Bonnes pratiques appliquees :
 - branche Git dediee au travail, puis fusion vers `main` lorsque le rendu est pret ;
 - scan anti-secret avant publication.
 
-Lien du depot Git a fournir dans le rendu :
-
-```text
-<A REMPLACER PAR LE LIEN GITHUB OU GITLAB DU PROJET>
-```
+Dépôt GitHub : [JobMarket France Data Platform](https://github.com/Abdarrazzak/jobmarket-france-data-platform).
 
 ## Gestion des secrets
 

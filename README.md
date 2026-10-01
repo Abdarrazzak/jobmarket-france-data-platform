@@ -100,7 +100,7 @@ python scripts/check_no_secrets.py
 - [Deploiement](docs/DEPLOYMENT.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Script de demonstration](docs/DEMO.md)
-- [Rapport final consolide](07-rapport-final-consolide.md)
+- [Rapport final](07-rapport-final.md)
 
 ## Demo rapide
 

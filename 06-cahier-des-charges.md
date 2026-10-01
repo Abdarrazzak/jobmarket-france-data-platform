@@ -5,7 +5,7 @@
 **Nom :** JobMarket Data Platform
 **Auteur :** Abdarrazzak HOUTI
 **Périmètre :** analyse des offres d'emploi data en France
-**Version :** MVP local soutenable - septembre 2026
+**Version :** MVP local finalise - septembre 2026
 **Moteur de transformation :** PySpark
 **Stockage analytique :** PostgreSQL, schéma `analytics`
 
@@ -137,6 +137,7 @@ Le projet est construit en priorité avec des composants open-source afin de res
 ## 6. Livrables
 
 - Code source versionné dans le dossier Projet Fil Rouge.
+- Dépôt GitHub : [JobMarket France Data Platform](https://github.com/Abdarrazzak/jobmarket-france-data-platform).
 - Pipeline de collecte et transformation PySpark.
 - Base PostgreSQL `jobmarket` avec tables analytiques.
 - API FastAPI avec endpoints de consultation.
